@@ -1,8 +1,10 @@
 require('dotenv').config();
 const express = require('express');
 const nodemailer = require('nodemailer');
+const cors = require('cors');
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 const transporter = nodemailer.createTransport({
   host: process.env.SMTP_HOST,
