@@ -14,14 +14,19 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+function formatBody(body) {
+  return Object.entries(body)
+    .map(([key, value]) => `${key}: ${value}`)
+    .join('\n');
+}
+
 app.post('/send-contact-email', async (req, res) => {
-  const { name, email, message } = req.body;
   try {
     await transporter.sendMail({
       from: process.env.SMTP_FROM,
       to: process.env.SMTP_TO,
-      subject: `Contact Form: ${name}`,
-      text: `Name: ${name}\nEmail: ${email}\nMessage: ${message}`,
+      subject: `Contact Form Submission`,
+      text: formatBody(req.body),
     });
     res.json({ success: true, message: 'Contact email sent!' });
   } catch (err) {
@@ -30,13 +35,12 @@ app.post('/send-contact-email', async (req, res) => {
 });
 
 app.post('/send-career-mail', async (req, res) => {
-  const { name, email, position, message } = req.body;
   try {
     await transporter.sendMail({
       from: process.env.SMTP_FROM,
       to: process.env.SMTP_TO,
-      subject: `Career Application: ${name} for ${position}`,
-      text: `Name: ${name}\nEmail: ${email}\nPosition: ${position}\nMessage: ${message}`,
+      subject: `Career Application Submission`,
+      text: formatBody(req.body),
     });
     res.json({ success: true, message: 'Career email sent!' });
   } catch (err) {
